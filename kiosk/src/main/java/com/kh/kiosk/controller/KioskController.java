@@ -20,6 +20,12 @@ public class KioskController {
 		this.menuCategoryService = menuCategoryService;
 	}
 	
+	// 키오스크 화면 호출
+	@GetMapping("/")
+	public String viewKiosk() {
+		return "kiosk";
+	}
+	
 	// 메뉴 카테고리 조회
 	@GetMapping("/kiosk/menuCategories")
 	public ResponseEntity<List<MenuCategoryDto>> getMenuCategories() {

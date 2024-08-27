@@ -1,3 +1,52 @@
+        $(document).ready(function() {
+            // 메뉴 카테고리를 가져와서 네비게이션 바와 콘텐츠에 추가하는 함수
+            function getMenuCategories() {
+                $.ajax({
+                    url: '/kiosk/menuCategories',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('Fetched data:', data);
+
+                        // 네비게이션 바에 항목 추가
+                        updateNavbarMenu(data);
+
+                        // 콘텐츠 영역에 카테고리 카드 추가
+//                        updateContentCategory(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching menu categories:', error);
+                    }
+                });
+            }
+
+            // 네비게이션 바 메뉴 업데이트
+            function updateNavbarMenu(data) {
+                const navbarMenu = $('#navbarNav .navbar-nav');
+                navbarMenu.empty(); // 메뉴가 중복되지 않도록 기존 내용을 지움
+
+                data.forEach(item => {
+                    const categoryLink = $('<a>', {
+                        class: 'nav-link',
+                        href: `#${item.categoryName.toLowerCase()}`,
+                        text: item.categoryName,
+                        'aria-current': item.categoryName === 'COFFEE' ? 'page' : undefined
+                    });
+
+                    const listItem = $('<li>', { class: 'nav-item' }).append(
+                        $('<h4>').append(categoryLink)
+                    );
+
+                    navbarMenu.append(listItem);
+                });
+            }
+
+            // 페이지가 로드되면 메뉴 카테고리 데이터 가져오기
+            getMenuCategories();
+        });
+
+
+
 let menuList = [...menu];
 let cartUl = document.querySelector('.cartUl');
 
@@ -5,11 +54,11 @@ let body
 // 메뉴 화면에 뿌리기
 menuList.forEach(function(item) {
 	if(item.id === 'coffee') {
-		body = document.querySelector('#cofee_body');
+		body = document.querySelector('#COFFEE_body');
 	} else if (item.id === 'flatccino') {
-		body = document.querySelector('#flatccino_body');
+		body = document.querySelector('#FLATCCINO_body');
 	} else {
-		body = document.querySelector('#dessert_body');
+		body = document.querySelector('#DESSERT_body');
 	}
 
 	body.innerHTML += `<div class="col-md-6 col-lg-3 mb-5">
