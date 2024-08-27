@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.kiosk.mapper.MenuMapper">
+	<!-- Insert a new menu -->
+	<insert id="create" parameterType="com.kh.kiosk.entity.Menu">
+		INSERT INTO tb_menu (menu_name, menu_category, menu_price, is_active, img_id, created_id, created_dt, modified_id, modified_dt)
+		VALUES (#{menuName}, #{menuCategory}, #{menuPrice}, #{active}, #{imgId}, #{createdId}, now(), #{modifiedId}, now())
+	</insert>
+	
+	<select id="findById" parameterType="Long" resultType="com.kh.kiosk.entity.Menu">
+		SELECT * FROM tb_menu WHERE id = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.kh.kiosk.entity.Menu">
+		UPDATE tb_menu
+		SET menu_name = #{menuName},
+			menu_category = #{menuCategory},
+			menu_price = #{menuPrice},
+			is_active = #{active},
+			img_id = #{imgId},
+			created_id = #{createdId},
+			created_dt = #{createdDt},
+			modified_id = #{modifiedId},
+			modified_dt = #{modifiedDt}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="Long">
+		DELETE FROM tb_menu WHERE id = #{id}
+	</delete>
+</mapper>

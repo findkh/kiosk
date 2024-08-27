@@ -2,14 +2,14 @@ package com.kh.kiosk.service;
 
 import java.util.List;
 
-import com.kh.kiosk.dto.MenuCategoryDto;
+import com.kh.kiosk.dto.MenuCategoryDTO;
 
 public interface MenuCategoryService {
-	List<MenuCategoryDto> findAll();
+	List<MenuCategoryDTO> findAll();
 	
-	MenuCategoryDto create(MenuCategoryDto categoryDto);
+	MenuCategoryDTO create(MenuCategoryDTO categoryDto);
 	
-	MenuCategoryDto update(Long id, MenuCategoryDto categoryDto);
+	MenuCategoryDTO update(Long id, MenuCategoryDTO categoryDto);
 	
 	void delete(Long id);
 }

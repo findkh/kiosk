@@ -31,8 +31,8 @@ layout:decorate="~{layout/default}"></html>
 										</button>
 									</div>
 								</div>
-								<button class="btn btn-primary ml-1" type="button" id="categoryAddBtn" data-toggle="modal" data-target="#categoryModal">카테고리 추가</button>
-								<button class="btn btn-primary ml-1" type="button">메뉴 추가</button>
+								<button class="btn btn-primary ml-1" type="button" id="categoryAddBtn" data-toggle="modal" data-target="#categoryModal">카테고리 설정</button>
+								<button class="btn btn-primary ml-1" type="button" id="menuAddBtn" data-toggle="modal" data-target="#menuModal">메뉴 추가</button>
 							</div>
 						</div>
 						
@@ -64,19 +64,50 @@ layout:decorate="~{layout/default}"></html>
 									</button>
 								</div>
 								<div class="modal-body">
-									<h5>기존 카테고리 목록</h5>
+									<h6>기존 카테고리 목록</h6>
 									<table class="table table-bordered">
 										<tbody id="tableCategory"></tbody>
 									</table>
-										<div class="row mr-1 ml-1">
-											<h5><label for="categoryName">추가할 카테고리 이름</label></h5>
-											<div class="col-md-9 pr-0">
-												<input type="text" class="form-control" id="categoryName" placeholder="카테고리 이름을 입력하세요">
-											</div>
-											<div class="col-md-3" style="vertical-align:middle;text-align: center">
-												<button type="button" class="btn btn-primary btn btn-primary btn-sm ml-3">저장</button>
-											</div>
+									<div class="row mr-1 ml-1">
+										<h6><label for="categoryName">추가할 카테고리 이름</label></h6>
+										<div class="col-md-9 pr-0">
+											<input type="text" class="form-control" id="categoryName" placeholder="카테고리 이름을 입력하세요">
 										</div>
+										<div class="col-md-3" style="vertical-align:middle;text-align: center">
+											<button type="button" class="btn btn-primary btn btn-primary btn-sm ml-3" id="saveCategoryBtn">저장</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="modal fade" id="menuModal" tabindex="-1" role="dialog" aria-labelledby="menuModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="menuModalLabel">메뉴 추가</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<h6>메뉴 카테고리</h6>
+									<select class="custom-select mb-3" id="menuCategoryModal" style="width: 100%;"></select>
+									<h6>이미지 추가</h6>
+									<div class="form-group text-center">
+										<input type="file" class="form-control-file" id="menuImageInput" accept="image/*">
+										<img id="menuThumbnail" src="#" alt="미리보기" class="img-thumbnail mt-3" style="display: none; max-width: 150px; max-height: 150px;">
+									</div>
+									<h6>메뉴 이름</h6>
+									<input type="text" class="form-control mb-3" id="menuNameInput" placeholder="메뉴 이름을 입력하세요.">
+									<h6>메뉴 가격</h6>
+									<input type="number" class="form-control mb-3" id="menuPriceInput" min="1" placeholder="메뉴 가격을 입력하세요.">
+									<h6>메뉴 활성화</h6>
+									<input type="checkbox" checked data-toggle="toggle">
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary" id="saveMenuButton">저장</button>
 								</div>
 							</div>
 						</div>

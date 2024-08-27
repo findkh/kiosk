@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.kiosk.mapper.MenuImgMapper">
+	<insert id="create" parameterType="com.kh.kiosk.entity.MenuImg" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO tb_menu_img (origin_file_name, file_name, file_type, file_size, created_id, created_dt)
+		VALUES (#{originFileName}, #{fileName}, #{fileType}, #{fileSize}, #{createdId}, now())
+	</insert>
+	
+	<select id="findById" parameterType="Long" resultType="com.kh.kiosk.entity.MenuImg">
+		SELECT * FROM tb_menu_img WHERE id = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.kh.kiosk.entity.MenuImg">
+		UPDATE tb_menu_img
+		SET origin_file_name = #{originFileName},
+			file_name = #{fileName},
+			file_type = #{fileType},
+			file_size = #{fileSize},
+			created_id = #{createdId},
+			created_dt = #{createdDt}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="Long">
+		DELETE FROM tb_menu_img WHERE id = #{id}
+	</delete>
+</mapper>
