@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.kiosk.mapper.MenuCategoryMapper">
+
+	<!-- 모든 카테고리 조회 -->
+	<select id="findAll" resultType="com.kh.kiosk.entity.MenuCategory">
+		SELECT id, category_name FROM tb_menu_category
+		ORDER BY id
+	</select>
+
+	<!-- 카테고리 추가 -->
+	<insert id="create" parameterType="com.kh.kiosk.entity.MenuCategory">
+		INSERT INTO tb_menu_category (category_name)
+		VALUES (#{categoryName})
+	</insert>
+	
+	<!-- 카테고리 이름으로 카테고리 조회 -->
+	<select id="findByName" resultType="com.kh.kiosk.entity.MenuCategory">
+		SELECT * FROM tb_menu_category WHERE category_name = #{categoryName}
+	</select>
+
+	<!-- 카테고리 수정 -->
+	<update id="update" parameterType="com.kh.kiosk.entity.MenuCategory">
+		UPDATE tb_menu_category
+		SET category_name = #{categoryName}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 카테고리 삭제 -->
+	<delete id="delete" parameterType="Long">
+		DELETE FROM tb_menu_category
+		WHERE id = #{id}
+	</delete>
+
+</mapper>
