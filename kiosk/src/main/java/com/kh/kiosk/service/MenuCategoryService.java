@@ -6,10 +6,7 @@ import com.kh.kiosk.dto.MenuCategoryDTO;
 
 public interface MenuCategoryService {
 	List<MenuCategoryDTO> findAll();
-	
-	MenuCategoryDTO create(MenuCategoryDTO categoryDto);
-	
-	MenuCategoryDTO update(Long id, MenuCategoryDTO categoryDto);
-	
+	void create(MenuCategoryDTO categoryDTO);
+	void update(Long id, MenuCategoryDTO categoryDTO);
 	void delete(Long id);
 }

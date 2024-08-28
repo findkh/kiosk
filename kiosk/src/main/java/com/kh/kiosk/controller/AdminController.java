@@ -27,8 +27,7 @@ public class AdminController {
 	private final MenuService menuService;
 	
 	@Autowired
-	public AdminController(MenuCategoryService menuCategoryService,
-			MenuService menuService) {
+	public AdminController(MenuCategoryService menuCategoryService, MenuService menuService) {
 		this.menuCategoryService = menuCategoryService;
 		this.menuService = menuService;
 	}
@@ -47,8 +46,7 @@ public class AdminController {
 	
 	// 메뉴 조회
 	@GetMapping("/admin/menu")
-	public ResponseEntity<List<MenuDTO>> getMenus(
-			@RequestParam(required = false) String category,
+	public ResponseEntity<List<MenuDTO>> getMenus(@RequestParam(required = false) String category,
 			@RequestParam(required = false) String name) {
 		List<MenuDTO> menuList = menuService.findAll(category, name);
 		return ResponseEntity.ok(menuList);
@@ -56,19 +54,26 @@ public class AdminController {
 	
 	// 메뉴 추가
 	@PostMapping("/admin/menu")
-	public ResponseEntity<Void> createMenu(
-		@RequestParam("menuDTO") String menuDTOJson,
-		@RequestParam("menuImages") String menuImgDTOJson,
-		@RequestParam("menuImageFile") MultipartFile menuImageFile) {
+	public ResponseEntity<Void> createMenu(@RequestParam("menuDTO") String menuDTOJson,
+			@RequestParam("menuImages") String menuImgDTOJson, @RequestParam("menuImageFile") MultipartFile menuImageFile) {
 		menuService.create(menuDTOJson, menuImgDTOJson, menuImageFile);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	
 	// 메뉴 수정
-	
+	@PutMapping("/admin/menu")
+	public ResponseEntity<Void> updateMenu(@RequestParam("menuDTOJson") String menuDTOJson,
+			@RequestParam(value = "menuImageFile", required = false) MultipartFile menuImageFile) {
+		menuService.update(menuDTOJson, menuImageFile);
+		return ResponseEntity.ok().build();
+	}
 	
 	// 메뉴 삭제
-	
+	@DeleteMapping("/admin/menu/{id}")
+	public ResponseEntity<Void> deleteMenu(@PathVariable("id") Long id) {
+		menuService.delete(id);
+		return ResponseEntity.noContent().build();
+	}
 	
 	// 메뉴 카테고리 조회
 	@GetMapping("/admin/menuCategories")
@@ -79,19 +84,17 @@ public class AdminController {
 	
 	// 메뉴 카테고리 추가
 	@PostMapping("/admin/menuCategories")
-	public ResponseEntity<MenuCategoryDTO> createMenuCategory(
-			@RequestBody MenuCategoryDTO categoryDto) {
-		MenuCategoryDTO createdCategory = menuCategoryService.create(categoryDto);
-		return ResponseEntity.ok(createdCategory);
+	public ResponseEntity<Void> createMenuCategory(@RequestBody MenuCategoryDTO categoryDTO) {
+		menuCategoryService.create(categoryDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	
 	// 메뉴 카테고리 수정
 	@PutMapping("/admin/menuCategories/{id}")
-	public ResponseEntity<MenuCategoryDTO> updateMenuCategory(
-			@PathVariable("id") Long id,
-			@RequestBody MenuCategoryDTO categoryDto) {
-		MenuCategoryDTO updatedCategory = menuCategoryService.update(id, categoryDto);
-		return ResponseEntity.ok(updatedCategory);
+	public ResponseEntity<Void> updateMenuCategory(@PathVariable("id") Long id,
+			@RequestBody MenuCategoryDTO categoryDTO) {
+		menuCategoryService.update(id, categoryDTO);
+		return ResponseEntity.ok().build();
 	}
 	
 	// 메뉴 카테고리 삭제
