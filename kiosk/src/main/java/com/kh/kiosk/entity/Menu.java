@@ -13,7 +13,7 @@ public class Menu {
 	private Long id;
 	private String menuName;
 	private String menuCategory;
-	private String menuPrice;
+	private Integer menuPrice;
 	private boolean isActive;
 	private String imgId;
 	private String createdId;

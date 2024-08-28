@@ -17,7 +17,7 @@ public class MenuDTO {
 	private Long id;
 	private String menuName;
 	private String menuCategory;
-	private String menuPrice;
+	private Integer menuPrice;
 	@JsonProperty("isActive")
 	private boolean isActive;
 	private String imgId;

@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -39,7 +41,28 @@ public class MenuServiceImpl implements MenuService {
 		this.menuImgMapper = menuImgMapper;
 		this.objectMapper = objectMapper;
 	}
-
+	
+	// 모든 메뉴 조회 (카테고리와 이름 필터링 추가)
+	@Override
+	public List<MenuDTO> findAll(String category, String name) {
+		List<Menu> menuList = menuMapper.findAll(category, name);
+		
+		return menuList.stream()
+				.map(menu -> new MenuDTO(
+					menu.getId(),
+					menu.getMenuName(),
+					menu.getMenuCategory(),
+					menu.getMenuPrice(),
+					menu.isActive(),
+					menu.getImgId(),
+					menu.getCreatedId(),
+					menu.getCreatedDt(),
+					menu.getModifiedId(),
+					menu.getModifiedDt()
+				))
+				.collect(Collectors.toList());
+	}
+	
 	@Override
 	@Transactional // 트랜잭션 범위 설정
 	public MenuWithImageDTO create(String menuDTOJson, String menuImgDTOJson, MultipartFile menuImageFile) {

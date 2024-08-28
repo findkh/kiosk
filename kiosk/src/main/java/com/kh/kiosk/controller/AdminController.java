@@ -16,15 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.kiosk.dto.MenuCategoryDTO;
+import com.kh.kiosk.dto.MenuDTO;
 import com.kh.kiosk.service.MenuCategoryService;
 import com.kh.kiosk.service.MenuService;
 
 @Controller
 public class AdminController {
-
+	
 	private final MenuCategoryService menuCategoryService;
 	private final MenuService menuService;
-
+	
 	@Autowired
 	public AdminController(MenuCategoryService menuCategoryService,
 			MenuService menuService) {
@@ -44,6 +45,15 @@ public class AdminController {
 		return "/contents/menu/menuPage";
 	}
 	
+	// 메뉴 조회
+	@GetMapping("/admin/menu")
+	public ResponseEntity<List<MenuDTO>> getMenus(
+			@RequestParam(required = false) String category,
+			@RequestParam(required = false) String name) {
+		List<MenuDTO> menuList = menuService.findAll(category, name);
+		return ResponseEntity.ok(menuList);
+	}
+	
 	// 메뉴 추가
 	@PostMapping("/admin/menu")
 	public ResponseEntity<Void> createMenu(
@@ -53,6 +63,12 @@ public class AdminController {
 		menuService.create(menuDTOJson, menuImgDTOJson, menuImageFile);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	// 메뉴 수정
+	
+	
+	// 메뉴 삭제
+	
 	
 	// 메뉴 카테고리 조회
 	@GetMapping("/admin/menuCategories")

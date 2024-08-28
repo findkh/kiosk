@@ -7,6 +7,19 @@
 		VALUES (#{menuName}, #{menuCategory}, #{menuPrice}, #{active}, #{imgId}, #{createdId}, now(), #{modifiedId}, now())
 	</insert>
 	
+	<select id="findAll" resultType="com.kh.kiosk.entity.Menu">
+		SELECT * FROM tb_menu
+		<where>
+			<if test="category != null and category != 'all'">
+				AND menu_category = #{category}
+			</if>
+			<if test="name != null and name.trim() != ''">
+				AND menu_name LIKE CONCAT('%', #{name}, '%')
+			</if>
+		</where>
+		ORDER BY id
+	</select>
+	
 	<select id="findById" parameterType="Long" resultType="com.kh.kiosk.entity.Menu">
 		SELECT * FROM tb_menu WHERE id = #{id}
 	</select>
