@@ -116,28 +116,21 @@ function addMenuItems(menuList) {
 	});
 }
 
-// 장바구니에 담기 기능
-$(document).on('click', '.btn-add', function() {
+
+// +/- 버튼 기능
+$(document).on('click', '.btn-number', function() {
 	let $btn = $(this);
-	let menuId = $btn.data('menu-id');
+	let btnType = $btn.attr('button-type');
 	let $parent = $btn.parent();
 	let $qty = $parent.find('input[type="number"]');
-	let qtyValue = $qty.val();
 	
-	console.log('메뉴 ID:', menuId);
-	console.log('수량:', qtyValue);
-	console.log('메뉴 리스트:', menuList);
-	
-	let foundItem = menuList.find(item => item.id == menuId);
-	
-	if (foundItem) {
-		foundItem.count = foundItem.count == null ? Number(qtyValue) : foundItem.count + Number(qtyValue);
-		cartArr.push(foundItem);
+	if (btnType === 'plus') {
+		$qty.val(Number($qty.val()) + 1);
+	} else if (btnType === 'minus') {
+		if (Number($qty.val()) > 0) {
+			$qty.val(Number($qty.val()) - 1);
+		}
 	}
-
-	makeCartList();
-	$qty.val(1);
-	$('.menuBtn').click();
 });
 
 // 메뉴 이미지를 가져오는 함수
@@ -176,101 +169,124 @@ function getMenuList() {
 	});
 }
 
-// +/- 버튼 기능
-$(document).on('click', '.btn-number', function() {
+// 장바구니에 담기 기능
+$(document).on('click', '.btn-add', function() {
 	let $btn = $(this);
-	let btnType = $btn.attr('button-type');
+	let menuId = $btn.data('menu-id');
 	let $parent = $btn.parent();
 	let $qty = $parent.find('input[type="number"]');
+	let qtyValue = Number($qty.val());
+	let foundItem = menuList.find(item => item.id == menuId);
 	
-	if (btnType === 'plus') {
-		$qty.val(Number($qty.val()) + 1);
-	} else if (btnType === 'minus') {
-		if (Number($qty.val()) > 0) {
-			$qty.val(Number($qty.val()) - 1);
+	if (foundItem) {
+		let existingItem = cartArr.find(item => item.id == menuId);
+		
+		if (existingItem) {
+			// 장바구니에 이미 있는 항목이면 수량을 증가시킴
+			existingItem.count += qtyValue;
+		} else {
+			// 장바구니에 없는 항목이면 count를 qtyValue로 설정하고 추가
+			foundItem.count = qtyValue;
+			cartArr.push(foundItem);
 		}
 	}
+	
+	makeCartList();
+	$qty.val(1);
+	$('.menuBtn').click();
 });
 
+// 카트 메뉴 리스트 만드는 함수
+function makeCartList() {
+	let totalPrice = 0;
+	$('.cartUl').empty();
+	
+	cartArr.forEach(function(item) {
+		$('.cartUl').append(`
+			<li class="list-group-item cartLi ${item.no} ${item.id}">
+				<div class="row">
+					<div class="col-sm-5">
+						<span>${item.menuName}</span><br>
+						<span>${createCommaFormat(item.menuPrice)}</span>
+					</div>
+					<div class="col-sm-7 mt-3">
+						<div class="input-group">
+							<input type="number" min="0" class="form-control cartQty" value="${item.count}" price="${item.menuPrice}" item="${item.id}" style="height:25px;text-align:center;" disabled>
+							<button class="btn btn-outline-primary cart-btn-number" type="button" button-type="plus" item-id="${item.id}" style="height:25px;text-align: center;"><i class="fas fa-plus menu"></i></button>
+							<button class="btn btn-outline-danger cart-btn-number" type="button" button-type="minus" item-id="${item.id}" style="height:25px;text-align: center;"><i class="fas fa-minus menu"></i></button>
+							<button class="btn btn-outline-success cart-btn-number" type="button" button-type="delete" item-id="${item.id}" style="height:25px;text-align: center;"><i class="fa fa-trash menu"></i></button>
+						</div>
+					</div>
+				</div>
+		</li>`);
+		totalPrice += item.menuPrice * item.count;
+	});
+	
+	makeCartFnBtn();
+	$('.total_price').text(createCommaFormat(totalPrice));
+}
 
 // 카트 +/- 삭제 버튼 기능
 function makeCartFnBtn() {
-	$(document).on('click', '.cart-btn-number', function() {
+	// 기존에 등록된 이벤트 핸들러를 제거
+	$(document).off('click', '.cart-btn-number');
+
+	// 새로운 이벤트 핸들러를 등록
+	$(document).on('click', '.cart-btn-number', function () {
 		let $btn = $(this);
 		let btnType = $btn.attr('button-type');
-		let $parent = $btn.parent();
+		let $parent = $btn.closest('.cartLi');
 		let $qty = $parent.find('input[type="number"]');
-		let price = $qty.attr('price');
-		let totalP = removeCommaFormat($('.total_price').text());
-
+		let price = Number($qty.attr('price'));
+		let totalPrice = Number(removeCommaFormat($('.total_price').text()));
+		let currentQty = Number($qty.val());
+		let itemId = Number($qty.attr('item'));
+		let cartItem = cartArr.find(item => item.id === itemId);
+		
 		if (btnType === 'plus') {
-			totalP -= price * $qty.val();
-			$qty.val(Number($qty.val()) + 1);
-			$('.total_price').text(createCommaFormat(totalP + ($qty.val() * price)));
-		} else if (btnType === 'minus') {
-			totalP -= price * $qty.val();
-			let value = Number($qty.val()) - 1;
-			$qty.val(value);
-			$('.total_price').text(createCommaFormat(totalP + ($qty.val() * price)));
+			currentQty++;
+			$qty.val(currentQty);
+			totalPrice += price;
 			
-			if (value == 0) {
-				let no = Number($qty.attr('item'));
-				cartArr = cartArr.filter(item => item.no != no);
-				uniqueArr = uniqueArr.filter(item => item.no != no);
+			if (cartItem) {
+				cartItem.count = currentQty;
+			}
+			
+			$('.total_price').text(createCommaFormat(totalPrice));
+		} else if (btnType === 'minus') {
+			if (currentQty > 1) {
+				currentQty--;
+				$qty.val(currentQty);
+				totalPrice -= price;
 				
+				if (cartItem) {
+					cartItem.count = currentQty;
+				}
+				
+				$('.total_price').text(createCommaFormat(totalPrice));
+			} else {
+				cartArr = cartArr.filter(item => item.id !== itemId);
 				$parent.closest('li').remove();
+				totalPrice -= price;
+				
+				$('.total_price').text(createCommaFormat(totalPrice));
 				
 				if ($('.cartUl').children().length === 0) {
 					location.reload();
 				}
 			}
-		} else {
-			totalP -= price * $qty.val();
-			$('.total_price').text(createCommaFormat(totalP));
-			
-			let no = Number($qty.attr('item'));
-			cartArr = cartArr.filter(item => item.no != no);
-			uniqueArr = uniqueArr.filter(item => item.no != no);
-			
+		} else if (btnType === 'delete') {
+			cartArr = cartArr.filter(item => item.id !== itemId);
 			$parent.closest('li').remove();
+			totalPrice -= currentQty * price;
+			
+			$('.total_price').text(createCommaFormat(totalPrice));
 			
 			if ($('.cartUl').children().length === 0) {
 				location.reload();
 			}
 		}
 	});
-}
-
-// 카트 메뉴 리스트 만드는 함수
-function makeCartList() {
-	let cartSet = new Set(cartArr);
-	uniqueArr = [...cartSet];
-	let totalPrice = 0;
-	$('.cartUl').empty();
-	
-	uniqueArr.forEach(function(item) {
-		$('.cartUl').append(`
-			<li class="list-group-item cartLi ${item.no} ${item.id}">
-				<div class="row">
-					<div class="col-sm-5">
-						<span>${item.name}</span><br>
-						<span>${createCommaFormat(item.price)}</span>
-					</div>
-					<div class="col-sm-7 mt-3">
-						<div class="input-group">
-							<input type="number" min="0" class="form-control cartQty" value="${item.count}" price="${item.price}" item="${item.no}" style="height:25px;text-align:center;" disabled>
-							<button class="btn btn-outline-primary cart-btn-number" type="button" button-type="plus" style="height:25px;text-align: center;"><i class="fas fa-plus menu"></i></button>
-							<button class="btn btn-outline-danger cart-btn-number" type="button" button-type="minus" style="height:25px;text-align: center;"><i class="fas fa-minus menu"></i></button>
-							<button class="btn btn-outline-success cart-btn-number" type="button" button-type="delete" style="height:25px;text-align: center;"><i class="fa fa-trash menu"></i></button>
-						</div>
-					</div>
-				</div>
-		</li>`);
-		totalPrice += item.price * item.count;
-	});
-	
-	makeCartFnBtn();
-	$('.total_price').text(createCommaFormat(totalPrice));
 }
 
 
@@ -282,25 +298,7 @@ function removeCommaFormat(num) {
 	return num.split(',').join('');
 }
 
-document.querySelector('.finishBtn').addEventListener('click', function() {
-	alert('주문해주셔서 감사합니다');
-	window.location.reload();
-});
-
-//캔버스 닫힐때 이벤트
-let canvas = document.querySelector('.orderList');
-canvas.addEventListener('hidden.bs.offcanvas', function() {
-	let childNode = cartUl.querySelectorAll('.cartLi');
-	cartArr = [];
-	childNode.forEach(function(item) {
-		let no = item.getAttribute('class').split(' ')[2];
-		let id = item.getAttribute('class').split(' ')[3];
-		let qty = Number(item.querySelector('.cartQty').value);
-		menuList.forEach(function(menu) {
-			if(menu.id == id && menu.no == no) {
-				menu.count = qty;
-				cartArr.push(menu);
-			}
-		})
-	})
+$('#saveOrderBtn').click(function(){
+	console.log('클릭')
+	console.log(cartArr)
 })
