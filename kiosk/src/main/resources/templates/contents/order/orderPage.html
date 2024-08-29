@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/default}"></html>
+	
+	<th:block layout:fragment="header" th:insert="~{@{/fragments/header}}"></th:block>
+	
+	<body id="page-top">
+		<div id="wrapper">
+			<th:block layout:fragment="sidebar" th:insert="~{@{/fragments/sidebar}}"></th:block>
+			
+			<div id="content-wrapper" class="d-flex flex-column">
+				
+				<th:block layout:fragment="topbar" th:insert="~{@{/fragments/topbar}}"></th:block>
+				
+				<div id="content">
+					<div class="container mt-5">
+						<h2 class="mb-4">주문 관리</h2>
+						<div class="form-group">
+							<div class="row ml-2">
+								<label class="mr-3 mb-0">조회 조건:</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="orderFilter" id="allOrders" value="all" checked>
+									<label class="form-check-label" for="allOrders">전체보기</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="orderFilter" id="pendingOrders" value="pending">
+									<label class="form-check-label" for="pendingOrders">주문 수락 대기</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="orderFilter" id="acceptedOrders" value="accepted">
+									<label class="form-check-label" for="acceptedOrders">주문 수락</label>
+								</div>
+							</div>
+						</div>
+
+						<!-- 주문 테이블 -->
+						<table class="table table-bordered">
+							<thead class="thead-light">
+								<tr>
+									<th>번호</th>
+									<th>메뉴 이름</th>
+									<th>수량</th>
+									<th>포장 또는 가져가기</th>
+									<th>주문 시간</th>
+									<th>상태 변경</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>1</td>
+									<td>아이스 아메리카</td>
+									<td>2</td>
+									<td>포장</td>
+									<td>2024-08-29 18:00</td>
+									<td>
+										<select class="form-control" onchange="updateOrderStatus(this)">
+											<option value="pending">주문 수락 대기</option>
+											<option value="accepted">주문 수락</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>2</td>
+									<td>카페라떼</td>
+									<td>1</td>
+									<td>가져가기</td>
+									<td>2024-08-29 18:00</td>
+									<td>
+										<select class="form-control" onchange="updateOrderStatus(this)">
+											<option value="pending">주문 수락 대기</option>
+											<option value="accepted">주문 수락</option>
+										</select>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<th:block layout:fragment="footer" th:insert="~{@{/fragments/footer}}"></th:block>
+			</div>
+		</div>
+
+		<a class="scroll-to-top rounded" href="#page-top">
+			<i class="fas fa-angle-up"></i>
+		</a>
+
+		<th:block layout:fragment="scripts" th:insert="~{@{/fragments/scripts}}"></th:block>
+		<script src="/js/orderpage.js"></script>
+	</body>

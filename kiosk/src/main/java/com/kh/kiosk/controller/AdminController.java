@@ -2,7 +2,6 @@ package com.kh.kiosk.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,7 +25,6 @@ public class AdminController {
 	private final MenuCategoryService menuCategoryService;
 	private final MenuService menuService;
 	
-	@Autowired
 	public AdminController(MenuCategoryService menuCategoryService, MenuService menuService) {
 		this.menuCategoryService = menuCategoryService;
 		this.menuService = menuService;
@@ -35,7 +33,13 @@ public class AdminController {
 	// 대시보드 화면 호출
 	@GetMapping("/viewDashboard")
 	public String viewDashboard() {
-		return "dashboard";
+		return "/contents/dashboard";
+	}
+	
+	// 주문 관리 화면 호출
+	@GetMapping("/viewOrderSetting")
+	public String viewOrderSetting() {
+		return "/contents/order/orderPage";
 	}
 	
 	// 메뉴 관리 화면 호출
