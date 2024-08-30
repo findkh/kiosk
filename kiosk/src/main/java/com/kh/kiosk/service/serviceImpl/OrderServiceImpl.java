@@ -2,14 +2,12 @@ package com.kh.kiosk.service.serviceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.kiosk.dto.OrderDTO;
 import com.kh.kiosk.dto.OrderDTOForAdmin;
 import com.kh.kiosk.entity.CallNumber;
@@ -23,17 +21,14 @@ import com.kh.kiosk.service.OrderService;
 public class OrderServiceImpl implements OrderService {
 
 	private final OrderMapper orderMapper;
-	private final ObjectMapper objectMapper;
 	private final CallNumberMapper callNumberMapper;
 	private final OrderWebSocketHandler orderWebSocketHandler;
 
 	@Autowired
 	public OrderServiceImpl(OrderMapper orderMapper,
-		ObjectMapper objectMapper,
 		CallNumberMapper callNumberMapper,
 		OrderWebSocketHandler orderWebSocketHandler) {
 		this.orderMapper = orderMapper;
-		this.objectMapper = objectMapper;
 		this.callNumberMapper = callNumberMapper;
 		this.orderWebSocketHandler = orderWebSocketHandler;
 	}
@@ -86,8 +81,8 @@ public class OrderServiceImpl implements OrderService {
 	
 	// 주문 수정
 	@Override
-	public void updateOrderStatus(Long id, String orderStatus) {
-		orderMapper.updateOrderStatus(id, orderStatus);
+	public void updateOrderStatus(Integer callNumber, String orderStatus) {
+		orderMapper.updateOrderStatus(callNumber, orderStatus);
 	}
 	
 	// DTO -> Entity

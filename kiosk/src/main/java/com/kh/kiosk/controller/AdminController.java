@@ -43,10 +43,16 @@ public class AdminController {
 		return "/contents/dashboard";
 	}
 	
-	// 주문 관리 화면 호출
-	@GetMapping("/viewOrderSetting")
-	public String viewOrderSetting() {
-		return "/contents/order/orderPage";
+	// 미결 주문 화면 호출
+	@GetMapping("/viewPendingOrderMng")
+	public String viewRealTimeOrderMng() {
+		return "/contents/order/pendingOrderPage";
+	}
+	
+	// 전체 주문 화면 호출
+	@GetMapping("/viewOrderList")
+	public String viewOrderList() {
+		return "/contents/order/orderListPage";
 	}
 	
 	// 메뉴 관리 화면 호출
@@ -63,9 +69,9 @@ public class AdminController {
 	}
 	
 	// 주문 상태 수정
-	@PutMapping("/admin/order/{id}/orderStatus")
-	public ResponseEntity<Void> updateOrderStatus(@PathVariable("id") Long id, @RequestBody OrderStatusDTO request) {
-		orderService.updateOrderStatus(id, request.getOrderStatus());
+	@PutMapping("/admin/order/{callNumber}/orderStatus")
+	public ResponseEntity<Void> updateOrderStatus(@PathVariable("callNumber") Integer callNumber, @RequestBody OrderStatusDTO request) {
+		orderService.updateOrderStatus(callNumber, request.getOrderStatus());
 		return ResponseEntity.ok().build();
 	}
 	

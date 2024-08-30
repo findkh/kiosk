@@ -38,8 +38,8 @@ layout:decorate="~{layout/default}"></html>
 						<!-- 주문 테이블 -->
 						<table class="table table-bordered">
 							<thead class="thead-light">
-								<tr>
-									<th>호출 번호</th>
+								<tr style="text-align: center;">
+									<th >호출 번호</th>
 									<th>메뉴 이름</th>
 									<th>수량</th>
 									<th>포장 또는 가져가기</th>
@@ -62,5 +62,5 @@ layout:decorate="~{layout/default}"></html>
 		</a>
 
 		<th:block layout:fragment="scripts" th:insert="~{@{/fragments/scripts}}"></th:block>
-		<script src="/js/orderpage.js"></script>
+		<script src="/js/pendingOrderPage.js"></script>
 	</body>

@@ -30,7 +30,7 @@
 		SET
 			order_status = #{orderStatus},
 			updated_dt = now()
-		WHERE id = #{id}
+		WHERE call_number = #{callNumber}
 	</update>
 	
 </mapper>

@@ -8,5 +8,5 @@ import com.kh.kiosk.entity.Order;
 public interface OrderMapper {
 	void create(Order order);
 	List<OrderDTOForAdmin> findPendingOrders(String orderStatus);
-	void updateOrderStatus(Long id, String orderStatus);
+	void updateOrderStatus(Integer callNumber, String orderStatus);
 }
