@@ -61,11 +61,21 @@ public class AdminController {
 		return "/contents/menu/menuPage";
 	}
 	
-	// 실시간 주문 조회
-	@GetMapping("/admin/order/{status}")
-	public ResponseEntity<List<OrderDTOForAdmin>> getOrders(@PathVariable("status") String status) {
-		List<OrderDTOForAdmin> orderList = orderService.findPendingOrders(status);
+	// 주문 조회
+	@GetMapping("/admin/order")
+	public ResponseEntity<List<OrderDTOForAdmin>> getOrders(
+		@RequestParam("status") String status,
+		@RequestParam(value = "startDate", required = false) String startDate,
+		@RequestParam(value = "endDate", required = false) String endDate) {
+		List<OrderDTOForAdmin> orderList = orderService.findOrders(status, startDate, endDate);
 		return ResponseEntity.ok(orderList);
+	}
+	
+	// 주문 삭제
+	@DeleteMapping("/admin/order/{callNumber}")
+	public ResponseEntity<Void> deleteMenu(@PathVariable("callNumber") Integer callNumber) {
+		orderService.delete(callNumber);
+		return ResponseEntity.noContent().build();
 	}
 	
 	// 주문 상태 수정

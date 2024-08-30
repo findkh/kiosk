@@ -7,22 +7,31 @@
 		VALUES (#{orderQty}, #{packagingOrSeat}, #{menuId}, #{orderStatus}, now(), now(), #{callNumber})
 	</insert>
 	
-	<select id="findPendingOrders" parameterType="String">
+	<select id="findOrders" parameterType="map">
 		SELECT a.id, a.call_number, a.order_qty, a.packaging_or_seat, a.order_status, a.created_dt, a.updated_dt, b.menu_name as order_menu_name
 		FROM tb_order a
 		LEFT OUTER JOIN tb_menu b ON b.id::varchar = a.menu_id
 		<where>
-			a.order_status != 'c' 
-			<if test='orderStatus != "all"'>
-				<if test='orderStatus == "w"'>
-					AND a.order_status = 'w'
-				</if>
-				<if test='orderStatus == "a"'>
-					AND a.order_status = 'a'
-				</if>
+			<choose>
+				<when test='orderStatus == "all"'></when>
+				<when test='orderStatus == "w"'>AND a.order_status = 'w'</when>
+				<when test='orderStatus == "a"'>AND a.order_status = 'a'</when>
+				<otherwise>AND a.order_status != 'c'</otherwise>
+			</choose>
+			
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.created_dt >= TO_TIMESTAMP(#{startDate}, 'YYYY-MM-DD')
+				AND a.created_dt <![CDATA[<=]]> TO_TIMESTAMP(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1 day' - INTERVAL '1 second'
 			</if>
 		</where>
-		ORDER BY created_dt ASC
+		<choose>
+			<when test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				ORDER BY a.created_dt DESC
+			</when>
+			<otherwise>
+				ORDER BY a.created_dt ASC
+			</otherwise>
+		</choose>
 	</select>
 	
 	<update id="updateOrderStatus" parameterType="map">
@@ -32,5 +41,11 @@
 			updated_dt = now()
 		WHERE call_number = #{callNumber}
 	</update>
+	
+	<delete id="delete" parameterType="Integer">
+		DELETE 
+		FROM tb_order
+		WHERE call_number = #{callNumber}
+	</delete>
 	
 </mapper>

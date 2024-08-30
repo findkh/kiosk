@@ -33,10 +33,10 @@ public class OrderServiceImpl implements OrderService {
 		this.orderWebSocketHandler = orderWebSocketHandler;
 	}
 	
-	// 실시간 주문 조회
+	// 주문 조회
 	@Override
-	public List<OrderDTOForAdmin> findPendingOrders(String orderStatus) {
-		List<OrderDTOForAdmin> orderList = orderMapper.findPendingOrders(orderStatus);
+	public List<OrderDTOForAdmin> findOrders(String orderStatus, String startDate, String endDate) {
+		List<OrderDTOForAdmin> orderList = orderMapper.findOrders(orderStatus, startDate, endDate);
 		
 		return orderList.stream().map(order -> new OrderDTOForAdmin(
 				order.getId(),
@@ -83,6 +83,12 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void updateOrderStatus(Integer callNumber, String orderStatus) {
 		orderMapper.updateOrderStatus(callNumber, orderStatus);
+	}
+	
+	// 주문 삭제
+	@Override
+	public void delete(Integer callNumber) {
+		orderMapper.delete(callNumber);
 	}
 	
 	// DTO -> Entity

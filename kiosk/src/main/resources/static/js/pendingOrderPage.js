@@ -33,18 +33,23 @@ $('input[name="orderFilter"]').change(function() {
 function getOrderList(){
 	const status = $('input[name="orderFilter"]:checked').val();
 	
-	$.ajax({
-		url: `/admin/order/${status}`,
-		type: 'GET',
-		dataType: 'json',
-		success: function(data) {
-			makeOrderTable(data);
-		},
-		error: function(xhr, status, error) {
-			let errorMessage = xhr.responseJSON.message || '알 수 없는 오류가 발생했습니다.';
-			alert(`Error ${xhr.status}: ${errorMessage}`);
-		}
-	});
+	console.log(status)
+	
+    $.ajax({
+        url: `/admin/order`,
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            status: status,
+        },
+        success: function(data) {
+            makeOrderTable(data); // 데이터 처리 함수 호출
+        },
+        error: function(xhr, status, error) {
+            let errorMessage = xhr.responseJSON.message || '알 수 없는 오류가 발생했습니다.';
+            alert(`Error ${xhr.status}: ${errorMessage}`);
+        }
+    });
 }
 
 // 주문 테이블 생성 함수
