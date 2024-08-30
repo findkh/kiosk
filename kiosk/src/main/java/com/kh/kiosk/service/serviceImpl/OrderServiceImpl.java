@@ -2,6 +2,8 @@ package com.kh.kiosk.service.serviceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.kiosk.dto.OrderDTO;
+import com.kh.kiosk.dto.OrderDTOForAdmin;
 import com.kh.kiosk.entity.CallNumber;
 import com.kh.kiosk.entity.Order;
 import com.kh.kiosk.handler.OrderWebSocketHandler;
@@ -35,6 +38,25 @@ public class OrderServiceImpl implements OrderService {
 		this.orderWebSocketHandler = orderWebSocketHandler;
 	}
 	
+	// 실시간 주문 조회
+	@Override
+	public List<OrderDTOForAdmin> findPendingOrders(String orderStatus) {
+		List<OrderDTOForAdmin> orderList = orderMapper.findPendingOrders(orderStatus);
+		
+		return orderList.stream().map(order -> new OrderDTOForAdmin(
+				order.getId(),
+				order.getCallNumber(),
+				order.getOrderQty(),
+				order.getPackagingOrSeat(),
+				order.getOrderMenuName(),
+				order.getOrderStatus(),
+				order.getCreatedDt(),
+				order.getUpdatedDt()
+			))
+			.collect(Collectors.toList());
+	}
+	
+	// 주문 저장
 	@Override
 	@Transactional
 	public Integer create(List<OrderDTO> orderDTOList) {
@@ -62,6 +84,13 @@ public class OrderServiceImpl implements OrderService {
 		return newCallNumber;
 	}
 	
+	// 주문 수정
+	@Override
+	public void updateOrderStatus(Long id, String orderStatus) {
+		orderMapper.updateOrderStatus(id, orderStatus);
+	}
+	
+	// DTO -> Entity
 	private Order convertToEntity(OrderDTO orderDTO) {
 		Order order = new Order();
 		order.setOrderQty(orderDTO.getOrderQty());
@@ -70,4 +99,7 @@ public class OrderServiceImpl implements OrderService {
 		order.setOrderStatus(orderDTO.getOrderStatus());
 		return order;
 	}
+
+
+
 }

@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+public class OrderForAdmin {
 	private Long id;
 	private Integer callNumber;
 	private Integer orderQty;
 	private String packagingOrSeat;
-	private String menuId;
+	private String orderMenuName;
 	private String orderStatus;
 	private LocalDateTime createdDt;
 	private LocalDateTime updatedDt;

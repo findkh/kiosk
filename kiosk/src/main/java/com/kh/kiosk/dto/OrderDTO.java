@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderDTO {
 	private Long id;
+	private Integer callNumber;
 	private Integer orderQty;
-	private String PackagingOrSeat;
+	private String packagingOrSeat;
 	private String menuId;
 	private String orderStatus;
 	private LocalDateTime createdDt;
 	private LocalDateTime updatedDt;
-	
 }

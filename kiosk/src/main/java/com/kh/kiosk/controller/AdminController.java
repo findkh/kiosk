@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.kiosk.dto.MenuCategoryDTO;
 import com.kh.kiosk.dto.MenuDTO;
+import com.kh.kiosk.dto.OrderDTOForAdmin;
+import com.kh.kiosk.dto.OrderStatusDTO;
 import com.kh.kiosk.service.MenuCategoryService;
 import com.kh.kiosk.service.MenuService;
 import com.kh.kiosk.service.OrderService;
@@ -51,6 +53,20 @@ public class AdminController {
 	@GetMapping("/viewMenuSetting")
 	public String viewMenuSetting() {
 		return "/contents/menu/menuPage";
+	}
+	
+	// 실시간 주문 조회
+	@GetMapping("/admin/order/{status}")
+	public ResponseEntity<List<OrderDTOForAdmin>> getOrders(@PathVariable("status") String status) {
+		List<OrderDTOForAdmin> orderList = orderService.findPendingOrders(status);
+		return ResponseEntity.ok(orderList);
+	}
+	
+	// 주문 상태 수정
+	@PutMapping("/admin/order/{id}/orderStatus")
+	public ResponseEntity<Void> updateOrderStatus(@PathVariable("id") Long id, @RequestBody OrderStatusDTO request) {
+		orderService.updateOrderStatus(id, request.getOrderStatus());
+		return ResponseEntity.ok().build();
 	}
 	
 	// 메뉴 조회

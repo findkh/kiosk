@@ -7,4 +7,30 @@
 		VALUES (#{orderQty}, #{packagingOrSeat}, #{menuId}, #{orderStatus}, now(), now(), #{callNumber})
 	</insert>
 	
+	<select id="findPendingOrders" parameterType="String">
+		SELECT a.id, a.call_number, a.order_qty, a.packaging_or_seat, a.order_status, a.created_dt, a.updated_dt, b.menu_name as order_menu_name
+		FROM tb_order a
+		LEFT OUTER JOIN tb_menu b ON b.id::varchar = a.menu_id
+		<where>
+			a.order_status != 'c' 
+			<if test='orderStatus != "all"'>
+				<if test='orderStatus == "w"'>
+					AND a.order_status = 'w'
+				</if>
+				<if test='orderStatus == "a"'>
+					AND a.order_status = 'a'
+				</if>
+			</if>
+		</where>
+		ORDER BY created_dt ASC
+	</select>
+	
+	<update id="updateOrderStatus" parameterType="map">
+		UPDATE tb_order
+		SET
+			order_status = #{orderStatus},
+			updated_dt = now()
+		WHERE id = #{id}
+	</update>
+	
 </mapper>

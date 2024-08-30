@@ -15,8 +15,8 @@ layout:decorate="~{layout/default}"></html>
 				<th:block layout:fragment="topbar" th:insert="~{@{/fragments/topbar}}"></th:block>
 				
 				<div id="content">
-					<div class="container mt-5">
-						<h2 class="mb-4">주문 관리</h2>
+					<div class="container mt-2">
+						<h2 class="mb-4">실시간 주문 관리</h2>
 						<div class="form-group">
 							<div class="row ml-2">
 								<label class="mr-3 mb-0">조회 조건:</label>
@@ -25,11 +25,11 @@ layout:decorate="~{layout/default}"></html>
 									<label class="form-check-label" for="allOrders">전체보기</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="orderFilter" id="pendingOrders" value="pending">
+									<input class="form-check-input" type="radio" name="orderFilter" id="pendingOrders" value="w">
 									<label class="form-check-label" for="pendingOrders">주문 수락 대기</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="orderFilter" id="acceptedOrders" value="accepted">
+									<input class="form-check-input" type="radio" name="orderFilter" id="acceptedOrders" value="a">
 									<label class="form-check-label" for="acceptedOrders">주문 수락</label>
 								</div>
 							</div>
@@ -39,7 +39,7 @@ layout:decorate="~{layout/default}"></html>
 						<table class="table table-bordered">
 							<thead class="thead-light">
 								<tr>
-									<th>번호</th>
+									<th>호출 번호</th>
 									<th>메뉴 이름</th>
 									<th>수량</th>
 									<th>포장 또는 가져가기</th>
@@ -47,33 +47,7 @@ layout:decorate="~{layout/default}"></html>
 									<th>상태 변경</th>
 								</tr>
 							</thead>
-							<tbody>
-								<tr>
-									<td>1</td>
-									<td>아이스 아메리카</td>
-									<td>2</td>
-									<td>포장</td>
-									<td>2024-08-29 18:00</td>
-									<td>
-										<select class="form-control" onchange="updateOrderStatus(this)">
-											<option value="pending">주문 수락 대기</option>
-											<option value="accepted">주문 수락</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>2</td>
-									<td>카페라떼</td>
-									<td>1</td>
-									<td>가져가기</td>
-									<td>2024-08-29 18:00</td>
-									<td>
-										<select class="form-control" onchange="updateOrderStatus(this)">
-											<option value="pending">주문 수락 대기</option>
-											<option value="accepted">주문 수락</option>
-										</select>
-									</td>
-								</tr>
+							<tbody id="orderTbody">
 							</tbody>
 						</table>
 					</div>
