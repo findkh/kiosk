@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.kiosk.mapper.OrderMapper">
+	
+	<insert id="create" parameterType="com.kh.kiosk.entity.Order" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO tb_order (order_qty, packaging_or_seat, menu_id, order_status, created_dt, updated_dt, call_number)
+		VALUES (#{orderQty}, #{packagingOrSeat}, #{menuId}, #{orderStatus}, now(), now(), #{callNumber})
+	</insert>
+	
+</mapper>

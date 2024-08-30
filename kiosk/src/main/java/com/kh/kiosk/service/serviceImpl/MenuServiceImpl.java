@@ -35,7 +35,9 @@ public class MenuServiceImpl implements MenuService {
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 	
-	public MenuServiceImpl(MenuMapper menuMapper, MenuImgMapper menuImgMapper, ObjectMapper objectMapper) {
+	public MenuServiceImpl(MenuMapper menuMapper, 
+			MenuImgMapper menuImgMapper, 
+			ObjectMapper objectMapper) {
 		this.menuMapper = menuMapper;
 		this.menuImgMapper = menuImgMapper;
 		this.objectMapper = objectMapper;

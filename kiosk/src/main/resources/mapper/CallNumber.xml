@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.kiosk.mapper.CallNumberMapper">
+	<select id="getMaxCallNumberForToday" resultType="java.lang.Integer">
+		SELECT COALESCE(MAX(call_number), 0) 
+		FROM tb_call_number
+		WHERE order_date = #{orderDate}
+	</select>
+	
+	<insert id="insertCallNumber" parameterType="com.kh.kiosk.entity.CallNumber" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO tb_call_number (order_date, call_number, created_dt)
+		VALUES (#{orderDate}, #{callNumber}, now())
+	</insert>
+</mapper>

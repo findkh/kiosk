@@ -299,6 +299,29 @@ function removeCommaFormat(num) {
 }
 
 $('#saveOrderBtn').click(function(){
-	console.log('클릭')
-	console.log(cartArr)
-})
+	let packagingOrSeat = $('input[name="packagingOrSeat"]:checked').val();
+	
+	let orderList = cartArr.map(function(item) {
+		return {
+			orderQty: item.count,
+			packagingOrSeat: packagingOrSeat,
+			menuId: item.id,
+			orderStatus: 'w'
+		};
+	});
+	
+	$.ajax({
+		url: '/kiosk/menu',
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(orderList),
+		success: function(num) {
+			alert('주문번호: ' +num +' 번\n 메뉴가 완성되면 주문번호를 호출하겠습니다.\n 감사합니다.');
+			location.reload();
+		},
+		error: function(xhr, status, error) {
+			console.error('에러 발생:', status, error);
+			alert(`Error ${xhr.status}: ${errorMessage}`);
+		}
+	});
+});
