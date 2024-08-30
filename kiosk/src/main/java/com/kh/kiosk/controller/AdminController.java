@@ -18,16 +18,21 @@ import com.kh.kiosk.dto.MenuCategoryDTO;
 import com.kh.kiosk.dto.MenuDTO;
 import com.kh.kiosk.service.MenuCategoryService;
 import com.kh.kiosk.service.MenuService;
+import com.kh.kiosk.service.OrderService;
 
 @Controller
 public class AdminController {
 	
 	private final MenuCategoryService menuCategoryService;
 	private final MenuService menuService;
+	private final OrderService orderService;
 	
-	public AdminController(MenuCategoryService menuCategoryService, MenuService menuService) {
+	public AdminController(MenuCategoryService menuCategoryService, 
+			MenuService menuService,
+			OrderService orderService) {
 		this.menuCategoryService = menuCategoryService;
 		this.menuService = menuService;
+		this.orderService = orderService;
 	}
 	
 	// 대시보드 화면 호출
