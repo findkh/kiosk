@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Order Status Monitor</title>
+	<title>주문 상태 모니터</title>
 	
 	<link href="/css/sb-admin-2.min.css" rel="stylesheet">
 	<style>
@@ -12,58 +12,65 @@
 			overflow-y: auto;
 			border: 1px solid #ddd;
 			padding: 15px;
+			color: black;
 		}
 		.order-list {
 			display: flex;
 			flex-wrap: wrap;
 			gap: 10px;
+			justify-content: flex-start;
 		}
 		.order-item {
-			flex: 1 1 25%;
-			min-width: 100px;
+			flex: 1 1 calc(33.33% - 10px);
+			min-width: 150px;
+			max-width: 150px;
 			text-align: center;
 			border: 1px solid #ddd;
 			padding: 10px;
 			border-radius: 5px;
+			color: black;
+			font-size: x-large;
 		}
 		.header {
 			font-size: 1.5rem;
 			margin-bottom: 15px;
 		}
+		.logo-size {
+			width: 200px;
+			display: block;
+			margin: 0 auto;
+		}
+		h3 {
+			text-align: center;
+		}
 	</style>
 </head>
-<body id="page-top">
+<body>
 	<div class="container mt-5">
-		<h2 class="mb-4">Order Status Monitor</h2>
-		<div class="row">
-			
-			<div class="col-md-6">
+		<img src="/img/big_logo.jpeg" class="logo-size">
+		<h3>번호가 호출되면 픽업데스크로 와주시길 바랍니다.</h3>
+		<div class="row mt-3">
+			<div class="col-md-4">
 				<div class="order-container">
-					<div class="header">수령해주세요</div>
-					<div class="order-list">
-						<div class="order-item">0001</div>
-						<div class="order-item">0002</div>
+					<div class="header" style="text-align: center; font-size: xxx-large;">Pick up</div>
+					<div class="order-list call-number" style="justify-content: center">
 					</div>
 				</div>
 			</div>
 			
-			<div class="col-md-6">
+			<div class="col-md-8">
 				<div class="order-container">
-					<div class="header">주문 수락 목록</div>
-					<div class="order-list">
-						<div class="order-item">0003</div>
-						<div class="order-item">0009</div>
+					<div class="header"></div>
+					<div class="order-list prev-call-number">
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<script src="/vendor/jquery/jquery.min.js"></script>
 	<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 	<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
 	<script src="/js/sb-admin-2.min.js"></script>
+	<script src="/js/orderStatusMonitor.js"></script>
 </body>
 </html>

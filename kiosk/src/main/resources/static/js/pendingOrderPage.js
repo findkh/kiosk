@@ -32,24 +32,29 @@ $('input[name="orderFilter"]').change(function() {
 // 주문 목록 조회 AJAX 요청 함수
 function getOrderList(){
 	const status = $('input[name="orderFilter"]:checked').val();
-	
-	console.log(status)
-	
-    $.ajax({
-        url: `/admin/order`,
-        type: 'GET',
-        dataType: 'json',
-        data: {
-            status: status,
-        },
-        success: function(data) {
-            makeOrderTable(data); // 데이터 처리 함수 호출
-        },
-        error: function(xhr, status, error) {
-            let errorMessage = xhr.responseJSON.message || '알 수 없는 오류가 발생했습니다.';
-            alert(`Error ${xhr.status}: ${errorMessage}`);
-        }
-    });
+	// 오늘 날짜를 YYYY-MM-DD 형식으로 생성
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+	const day = String(today.getDate()).padStart(2, '0');
+	const formattedDate = `${year}-${month}-${day}`;
+	$.ajax({
+		url: `/admin/order`,
+		type: 'GET',
+		dataType: 'json',
+		data: {
+			status: status,
+			startDate: formattedDate,
+			endDate: formattedDate
+		},
+		success: function(data) {
+			makeOrderTable(data);
+		},
+		error: function(xhr, status, error) {
+			let errorMessage = xhr.responseJSON.message || '알 수 없는 오류가 발생했습니다.';
+			alert(`Error ${xhr.status}: ${errorMessage}`);
+		}
+	});
 }
 
 // 주문 테이블 생성 함수

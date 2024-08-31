@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.kh.kiosk.dto.MenuCategoryDTO;
 import com.kh.kiosk.dto.MenuDTO;
@@ -21,6 +22,7 @@ import com.kh.kiosk.dto.OrderStatusDTO;
 import com.kh.kiosk.service.MenuCategoryService;
 import com.kh.kiosk.service.MenuService;
 import com.kh.kiosk.service.OrderService;
+import com.kh.kiosk.service.SseEmitterService;
 
 @Controller
 public class AdminController {
@@ -28,13 +30,17 @@ public class AdminController {
 	private final MenuCategoryService menuCategoryService;
 	private final MenuService menuService;
 	private final OrderService orderService;
+	private final SseEmitterService sseEmitterService;
+
 	
 	public AdminController(MenuCategoryService menuCategoryService, 
 			MenuService menuService,
-			OrderService orderService) {
+			OrderService orderService,
+			SseEmitterService sseEmitterService) {
 		this.menuCategoryService = menuCategoryService;
 		this.menuService = menuService;
 		this.orderService = orderService;
+		this.sseEmitterService = sseEmitterService;
 	}
 	
 	// 대시보드 화면 호출
@@ -59,6 +65,12 @@ public class AdminController {
 	@GetMapping("/viewMenuSetting")
 	public String viewMenuSetting() {
 		return "/contents/menu/menuPage";
+	}
+	
+	// 주문 상태 모니터에서 SSE를 통해 주문 상태를 구독
+	@GetMapping("/admin/stream")
+	public SseEmitter streamOrders() {
+		return sseEmitterService.connect();
 	}
 	
 	// 주문 조회

@@ -14,4 +14,5 @@ public interface OrderMapper {
 			@Param("endDate") String endDate);
 	void updateOrderStatus(Integer callNumber, String orderStatus);
 	void delete(Integer callNumber);
+	List<Order> findRecentCompletedOrderNumbers();
 }

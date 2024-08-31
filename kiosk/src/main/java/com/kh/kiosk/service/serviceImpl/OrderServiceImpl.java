@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +15,7 @@ import com.kh.kiosk.handler.OrderWebSocketHandler;
 import com.kh.kiosk.mapper.CallNumberMapper;
 import com.kh.kiosk.mapper.OrderMapper;
 import com.kh.kiosk.service.OrderService;
+import com.kh.kiosk.service.SseEmitterService;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -23,14 +23,16 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderMapper orderMapper;
 	private final CallNumberMapper callNumberMapper;
 	private final OrderWebSocketHandler orderWebSocketHandler;
-
-	@Autowired
+	private final SseEmitterService sseEmitterService;
+	
 	public OrderServiceImpl(OrderMapper orderMapper,
 		CallNumberMapper callNumberMapper,
-		OrderWebSocketHandler orderWebSocketHandler) {
+		OrderWebSocketHandler orderWebSocketHandler,
+		SseEmitterService sseEmitterService) {
 		this.orderMapper = orderMapper;
 		this.callNumberMapper = callNumberMapper;
 		this.orderWebSocketHandler = orderWebSocketHandler;
+		this.sseEmitterService = sseEmitterService;
 	}
 	
 	// 주문 조회
@@ -79,10 +81,29 @@ public class OrderServiceImpl implements OrderService {
 		return newCallNumber;
 	}
 	
-	// 주문 수정
+	// 주문 상태 수정
+	@Transactional
 	@Override
 	public void updateOrderStatus(Integer callNumber, String orderStatus) {
 		orderMapper.updateOrderStatus(callNumber, orderStatus);
+		
+		// 메뉴가 완성 되면 SSE로 고객을 호출한다.
+		if (orderStatus.equals("c")) {
+			List<Order> orderList = orderMapper.findRecentCompletedOrderNumbers();
+			
+			List<Integer> callNumbers = orderList.stream()
+				.map(Order::getCallNumber)
+				.collect(Collectors.toList());
+			
+			String currentCall = callNumber.toString();
+			String callList = callNumbers.stream()
+				.map(String::valueOf)
+				.collect(Collectors.joining(", "));
+			
+			String output = String.format("currentCall: %s, CallList: %s", currentCall, callList);
+			
+			sseEmitterService.sendCallList(output);
+		}
 	}
 	
 	// 주문 삭제
@@ -100,7 +121,4 @@ public class OrderServiceImpl implements OrderService {
 		order.setOrderStatus(orderDTO.getOrderStatus());
 		return order;
 	}
-
-
-
 }

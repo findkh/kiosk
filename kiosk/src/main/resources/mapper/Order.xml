@@ -40,6 +40,7 @@
 			order_status = #{orderStatus},
 			updated_dt = now()
 		WHERE call_number = #{callNumber}
+			AND DATE(updated_dt) = CURRENT_DATE
 	</update>
 	
 	<delete id="delete" parameterType="Integer">
@@ -48,4 +49,12 @@
 		WHERE call_number = #{callNumber}
 	</delete>
 	
+	<select id="findRecentCompletedOrderNumbers">
+		SELECT call_number
+		FROM tb_order
+		WHERE order_status = 'c' 
+			AND updated_dt >= NOW() - INTERVAL '2 minutes'
+			AND DATE(updated_dt) = CURRENT_DATE
+		ORDER BY updated_dt desc
+	</select>
 </mapper>
