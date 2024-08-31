@@ -19,6 +19,7 @@ import com.kh.kiosk.dto.MenuCategoryDTO;
 import com.kh.kiosk.dto.MenuDTO;
 import com.kh.kiosk.dto.OrderDTOForAdmin;
 import com.kh.kiosk.dto.OrderStatusDTO;
+import com.kh.kiosk.dto.SalesReportDTO;
 import com.kh.kiosk.service.MenuCategoryService;
 import com.kh.kiosk.service.MenuService;
 import com.kh.kiosk.service.OrderService;
@@ -65,6 +66,13 @@ public class AdminController {
 	@GetMapping("/viewMenuSetting")
 	public String viewMenuSetting() {
 		return "/contents/menu/menuPage";
+	}
+	
+	// 대시보드 데이터 조회
+	@GetMapping("/admin/salesReport")
+	public ResponseEntity<SalesReportDTO> getSalesReport(){
+		SalesReportDTO report = orderService.getSalesReport();
+		return ResponseEntity.ok(report);
 	}
 	
 	// 주문 상태 모니터에서 SSE를 통해 주문 상태를 구독

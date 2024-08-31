@@ -57,4 +57,41 @@
 			AND DATE(updated_dt) = CURRENT_DATE
 		ORDER BY updated_dt desc
 	</select>
+	
+	<select id="findSalesInfo">
+		WITH MonthlySales AS (
+			SELECT COUNT(o.id) AS monthly_sales_count, SUM(o.order_qty * m.menu_price) AS monthly_sales_amount
+			FROM tb_order o
+			JOIN tb_menu m ON o.menu_id::integer = m.id
+			WHERE DATE_TRUNC('month', o.created_dt) = DATE_TRUNC('month', CURRENT_DATE)
+		),
+		DailySales AS (
+			SELECT COUNT(o.id) AS daily_sales_count, SUM(o.order_qty * m.menu_price) AS daily_sales_amount
+			FROM tb_order o
+			JOIN tb_menu m ON o.menu_id::integer = m.id
+			WHERE DATE_TRUNC('day', o.created_dt) = CURRENT_DATE
+		)
+		SELECT m.monthly_sales_count, m.monthly_sales_amount, d.daily_sales_count, d.daily_sales_amount
+		FROM MonthlySales m, DailySales d;
+	</select>
+	
+	<select id="findMonthlySales">
+		SELECT TO_CHAR(o.created_dt, 'YYYY-MM') AS year_month, SUM(o.order_qty * m.menu_price) AS monthly_sales_amount
+		FROM tb_order o
+		JOIN tb_menu m ON o.menu_id::integer = m.id
+		WHERE DATE_TRUNC('year', o.created_dt) = DATE_TRUNC('year', CURRENT_DATE)
+		GROUP BY TO_CHAR(o.created_dt, 'YYYY-MM')
+		ORDER BY year_month
+	</select>
+	
+	<select id="findMenuSales">
+		SELECT m.menu_name, SUM(o.order_qty) AS total_sales_count
+		FROM tb_order o 
+		JOIN tb_menu m ON o.menu_id::integer = m.id
+		WHERE o.created_dt >= CURRENT_DATE - INTERVAL '1 month'
+			AND o.created_dt <![CDATA[<]]> CURRENT_DATE
+		GROUP BY m.menu_name
+		ORDER BY total_sales_count DESC
+		LIMIT 5;
+	</select>
 </mapper>

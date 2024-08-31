@@ -7,10 +7,17 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.kiosk.dto.MenuSalesDTO;
+import com.kh.kiosk.dto.MonthlySalesDTO;
 import com.kh.kiosk.dto.OrderDTO;
 import com.kh.kiosk.dto.OrderDTOForAdmin;
+import com.kh.kiosk.dto.SalesInfoDTO;
+import com.kh.kiosk.dto.SalesReportDTO;
 import com.kh.kiosk.entity.CallNumber;
+import com.kh.kiosk.entity.MenuSales;
+import com.kh.kiosk.entity.MonthlySales;
 import com.kh.kiosk.entity.Order;
+import com.kh.kiosk.entity.SalesInfo;
 import com.kh.kiosk.handler.OrderWebSocketHandler;
 import com.kh.kiosk.mapper.CallNumberMapper;
 import com.kh.kiosk.mapper.OrderMapper;
@@ -33,6 +40,39 @@ public class OrderServiceImpl implements OrderService {
 		this.callNumberMapper = callNumberMapper;
 		this.orderWebSocketHandler = orderWebSocketHandler;
 		this.sseEmitterService = sseEmitterService;
+	}
+	
+	// 대시보드 데이터 조회
+	@Override
+	public SalesReportDTO getSalesReport() {
+		SalesInfo salesInfo = orderMapper.findSalesInfo();
+		List<MonthlySales> monthlySales = orderMapper.findMonthlySales();
+		List<MenuSales> menuSales = orderMapper.findMenuSales();
+		
+		// DTO 변환
+		SalesInfoDTO salesInfoDTO = new SalesInfoDTO();
+		salesInfoDTO.setMonthlySalesCount(salesInfo.getMonthlySalesCount());
+		salesInfoDTO.setMonthlySalesAmount(salesInfo.getMonthlySalesAmount());
+		salesInfoDTO.setDailySalesCount(salesInfo.getDailySalesCount());
+		salesInfoDTO.setDailySalesAmount(salesInfo.getDailySalesAmount());
+		
+		// MonthlySales -> MonthlySalesDTO 변환
+		List<MonthlySalesDTO> monthlySalesDTOList = monthlySales.stream()
+				.map(ms -> new MonthlySalesDTO(ms.getYearMonth(), ms.getMonthlySalesAmount()))
+				.collect(Collectors.toList());
+		
+		// MenuSales -> MenuSalesDTO 변환
+		List<MenuSalesDTO> menuSalesDTOList = menuSales.stream()
+			.map(ms -> new MenuSalesDTO(ms.getMenuName(), ms.getTotalSalesCount()))
+			.collect(Collectors.toList());
+		
+		// SalesReportDTO 생성 및 반환
+		SalesReportDTO salesReportDTO = new SalesReportDTO();
+		salesReportDTO.setSalesInfo(salesInfoDTO);
+		salesReportDTO.setMonthlySales(monthlySalesDTOList);
+		salesReportDTO.setMenuSales(menuSalesDTOList);
+		
+		return salesReportDTO;
 	}
 	
 	// 주문 조회
@@ -121,4 +161,6 @@ public class OrderServiceImpl implements OrderService {
 		order.setOrderStatus(orderDTO.getOrderStatus());
 		return order;
 	}
+
+
 }
