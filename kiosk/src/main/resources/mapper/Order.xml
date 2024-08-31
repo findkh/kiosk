@@ -51,11 +51,14 @@
 	
 	<select id="findRecentCompletedOrderNumbers">
 		SELECT call_number
-		FROM tb_order
-		WHERE order_status = 'c' 
-			AND updated_dt >= NOW() - INTERVAL '2 minutes'
-			AND DATE(updated_dt) = CURRENT_DATE
-		ORDER BY updated_dt desc
+		FROM (
+			SELECT DISTINCT call_number, updated_dt
+			FROM tb_order
+			WHERE order_status = 'c' 
+				AND updated_dt >= NOW() - INTERVAL '2 minutes'
+				AND DATE(updated_dt) = CURRENT_DATE
+			) AS distinct_orders
+		ORDER BY updated_dt DESC;
 	</select>
 	
 	<select id="findSalesInfo">
