@@ -20,9 +20,11 @@ import com.kh.kiosk.dto.MenuDTO;
 import com.kh.kiosk.dto.MenuImgDTO;
 import com.kh.kiosk.entity.Menu;
 import com.kh.kiosk.entity.MenuImg;
+import com.kh.kiosk.entity.Order;
 import com.kh.kiosk.exception.CustomException;
 import com.kh.kiosk.mapper.MenuImgMapper;
 import com.kh.kiosk.mapper.MenuMapper;
+import com.kh.kiosk.mapper.OrderMapper;
 import com.kh.kiosk.service.MenuService;
 
 @Service
@@ -31,16 +33,19 @@ public class MenuServiceImpl implements MenuService {
 	private final MenuMapper menuMapper;
 	private final MenuImgMapper menuImgMapper;
 	private final ObjectMapper objectMapper;
+	private final OrderMapper orderMapper;
 	
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 	
 	public MenuServiceImpl(MenuMapper menuMapper, 
 			MenuImgMapper menuImgMapper, 
-			ObjectMapper objectMapper) {
+			ObjectMapper objectMapper,
+			OrderMapper orderMapper) {
 		this.menuMapper = menuMapper;
 		this.menuImgMapper = menuImgMapper;
 		this.objectMapper = objectMapper;
+		this.orderMapper = orderMapper;
 	}
 	
 	// 메뉴 조회
@@ -171,6 +176,7 @@ public class MenuServiceImpl implements MenuService {
 	}
 	
 	// 메뉴 삭제
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void delete(Long id) {
 		Menu menu = menuMapper.findById(id);
@@ -178,23 +184,24 @@ public class MenuServiceImpl implements MenuService {
 			throw new CustomException(HttpStatus.NOT_FOUND, "해당 ID의 메뉴를 찾을 수 없습니다.");
 		}
 		
+		// 판매 내역 검색 후 한번이라도 판매된 적이 있다면 삭제할 수 없다.
+		List<Order> orderList = orderMapper.findByMenuId(id.toString());
+		if (orderList.size() > 0) {
+			throw new CustomException(HttpStatus.CONFLICT, "판매 내역이 존재하여 삭제할 수 없습니다.");
+		}
+		
 		String imgIdStr = menu.getImgId();
+		Long imgId = null;
+		String fileName = null;
+		
 		if (imgIdStr != null) {
 			try {
-				Long imgId = Long.parseLong(imgIdStr);
+				imgId = Long.parseLong(imgIdStr);
 				MenuImg menuImg = menuImgMapper.findById(imgId);
 				
 				if (menuImg != null) {
-					String fileName = menuImg.getFileName();
-					Path filePath = Paths.get(uploadDir).resolve(fileName);
-					
-					try {
-						Files.deleteIfExists(filePath);
-					} catch (IOException e) {
-						throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 파일 삭제 중 오류가 발생하였습니다.");
-					}
-					
-					menuImgMapper.delete(imgId);
+					fileName = menuImg.getFileName();
+					menuImgMapper.delete(imgId); // DB에서 이미지 정보 삭제
 				} else {
 					throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "해당 이미지 ID의 이미지를 찾을 수 없습니다.");
 				}
@@ -203,7 +210,18 @@ public class MenuServiceImpl implements MenuService {
 			}
 		}
 		
+		// 메뉴 삭제
 		menuMapper.delete(id);
+		
+		// 트랜잭션이 성공적으로 커밋된 후에 파일 삭제
+		if (fileName != null) {
+			Path filePath = Paths.get(uploadDir).resolve(fileName);
+			try {
+				Files.deleteIfExists(filePath);
+			} catch (IOException e) {
+				throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 파일 삭제 중 오류가 발생하였습니다.");
+			}
+		}
 	}
 	
 	// 고유 파일 이름 생성

@@ -1,14 +1,4 @@
 $(document).ready(function() {
-	function getFormattedDate(offsetDays = 0) {
-		const today = new Date();
-		today.setDate(today.getDate() + offsetDays);
-		const year = today.getFullYear();
-		const month = String(today.getMonth() + 1).padStart(2, '0');
-		const day = String(today.getDate()).padStart(2, '0');
-		return `${year}-${month}-${day}`;
-	}
-	
-	
 	const endDate = getFormattedDate();
 	const startDate = getFormattedDate(-30);
 	
@@ -18,21 +8,24 @@ $(document).ready(function() {
 	getOrderList();
 });
 
-function formatDate(dateString) {
-	const date = new Date(dateString);
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const day = String(date.getDate()).padStart(2, '0');
-	const hours = String(date.getHours()).padStart(2, '0');
-	const minutes = String(date.getMinutes()).padStart(2, '0');
-	return `${year}-${month}-${day} ${hours}:${minutes}`;
-}
+$('#searchBtn').click(function(){
+	getOrderList();
+})
+
+// 입력 필드에서 엔터 키를 감지
+$('#keywordInput').on('keypress keyup', function(event) {
+	if (event.which === 13) {
+		event.preventDefault();
+		getOrderList();
+	}
+});
 
 // 주문 목록 조회 AJAX 요청 함수
 function getOrderList(){
 	let status = 'all';
 	let startDt = $('#startDate').val();
-	let endDt = $('#endDate').val()
+	let endDt = $('#endDate').val();
+	let keyWord = $('#keywordInput').val();
 	
 	$.ajax({
 		url: `/admin/order`,
@@ -41,7 +34,8 @@ function getOrderList(){
 		data: {
 			status: status,
 			startDate: startDt,
-			endDate: endDt
+			endDate: endDt,
+			keyWord: keyWord
 		},
 		success: function(data) {
 			makeOrderTable(data); // 데이터 처리 함수 호출

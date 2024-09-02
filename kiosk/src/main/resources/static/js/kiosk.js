@@ -289,15 +289,6 @@ function makeCartFnBtn() {
 	});
 }
 
-
-function createCommaFormat(num) {
-	return Number(num).toLocaleString();
-}
-
-function removeCommaFormat(num) {
-	return num.split(',').join('');
-}
-
 $('#saveOrderBtn').click(function(){
 	let packagingOrSeat = $('input[name="packagingOrSeat"]:checked').val();
 	

@@ -14,7 +14,7 @@
 				AND menu_category = #{category}
 			</if>
 			<if test="name != null and name.trim() != ''">
-				AND menu_name LIKE CONCAT('%', #{name}, '%')
+				AND LOWER(menu_name) LIKE CONCAT('%', LOWER(#{name}), '%')
 			</if>
 		</where>
 		ORDER BY id

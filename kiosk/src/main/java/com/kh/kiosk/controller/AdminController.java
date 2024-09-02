@@ -86,8 +86,9 @@ public class AdminController {
 	public ResponseEntity<List<OrderDTOForAdmin>> getOrders(
 		@RequestParam("status") String status,
 		@RequestParam(value = "startDate", required = false) String startDate,
-		@RequestParam(value = "endDate", required = false) String endDate) {
-		List<OrderDTOForAdmin> orderList = orderService.findOrders(status, startDate, endDate);
+		@RequestParam(value = "endDate", required = false) String endDate,
+		@RequestParam(value = "keyWord", required = false) String keyWord) {
+		List<OrderDTOForAdmin> orderList = orderService.findOrders(status, startDate, endDate, keyWord);
 		return ResponseEntity.ok(orderList);
 	}
 	

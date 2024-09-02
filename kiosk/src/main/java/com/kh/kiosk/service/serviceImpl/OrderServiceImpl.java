@@ -77,8 +77,9 @@ public class OrderServiceImpl implements OrderService {
 	
 	// 주문 조회
 	@Override
-	public List<OrderDTOForAdmin> findOrders(String orderStatus, String startDate, String endDate) {
-		List<OrderDTOForAdmin> orderList = orderMapper.findOrders(orderStatus, startDate, endDate);
+	public List<OrderDTOForAdmin> findOrders(String orderStatus, String startDate, String endDate, String keyWord) {
+		
+		List<OrderDTOForAdmin> orderList = orderMapper.findOrders(orderStatus, startDate, endDate, keyWord);
 		
 		return orderList.stream().map(order -> new OrderDTOForAdmin(
 				order.getId(),

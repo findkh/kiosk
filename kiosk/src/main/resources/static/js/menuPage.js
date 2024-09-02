@@ -79,13 +79,9 @@ $('#saveMenuButton').on('click', function() {
 $('#keywordInput').on('keypress keyup', function(event) {
 	if (event.which === 13) {
 		event.preventDefault();
-		handleEnterKey();
+		getMenuList();
 	}
 });
-
-function handleEnterKey() {
-	getMenuList();
-}
 
 // 모든 메뉴의 리스트를 조회
 function getMenuList() {
@@ -232,7 +228,7 @@ function createMenuCard(menu) {
 							<label for="menuPrice-${menu.id}" class="col-form-label">가격</label>
 						</div>
 						<div class="col pr-3">
-							<input type="text" id="menuPrice-${menu.id}" class="form-control" value="${menu.menuPrice}" disabled data-original="${menu.menuPrice}" />
+							<input type="text" id="menuPrice-${menu.id}" class="form-control" value="${createCommaFormat(menu.menuPrice)}" disabled data-original="${menu.menuPrice}" />
 						</div>
 					</div>
 					<div class="form-row align-items-center mb-3">

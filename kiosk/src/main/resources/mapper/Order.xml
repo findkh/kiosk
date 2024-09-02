@@ -23,6 +23,10 @@
 				AND a.created_dt >= TO_TIMESTAMP(#{startDate}, 'YYYY-MM-DD')
 				AND a.created_dt <![CDATA[<=]]> TO_TIMESTAMP(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1 day' - INTERVAL '1 second'
 			</if>
+			
+			<if test="keyWord != null and keyWord !=''">
+				AND LOWER(menu_name) LIKE CONCAT('%', LOWER(#{keyWord}), '%')
+			</if>
 		</where>
 		<choose>
 			<when test="startDate != null and startDate != '' and endDate != null and endDate != ''">
@@ -96,5 +100,11 @@
 		GROUP BY m.menu_name
 		ORDER BY total_sales_count DESC
 		LIMIT 5;
+	</select>
+	
+	<select id="findByMenuId" parameterType="String">
+		SELECT *
+		FROM tb_order
+		WHERE menu_id = #{menuId}
 	</select>
 </mapper>

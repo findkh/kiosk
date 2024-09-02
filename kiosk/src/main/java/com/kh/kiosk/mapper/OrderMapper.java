@@ -14,11 +14,13 @@ public interface OrderMapper {
 	void create(Order order);
 	List<OrderDTOForAdmin> findOrders(@Param("orderStatus") String orderStatus, 
 			@Param("startDate") String startDate, 
-			@Param("endDate") String endDate);
+			@Param("endDate") String endDate,
+			@Param("keyWord") String keyWord);
 	void updateOrderStatus(Integer callNumber, String orderStatus);
 	void delete(Integer callNumber);
 	List<Order> findRecentCompletedOrderNumbers();
 	SalesInfo findSalesInfo();
 	List<MonthlySales> findMonthlySales();
 	List<MenuSales> findMenuSales();
+	List<Order> findByMenuId(String menuId);
 }

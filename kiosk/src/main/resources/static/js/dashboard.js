@@ -8,12 +8,11 @@ function getSalesReport() {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data) {
-			console.log(data);
 			if (data.salesInfo) {
-				$('#dailySalesCount').text(data.salesInfo.dailySalesCount);
-				$('#dailySalesAmount').text(data.salesInfo.dailySalesAmount);
-				$('#monthlySalesCount').text(data.salesInfo.monthlySalesCount);
-				$('#monthlySalesAmount').text(data.salesInfo.monthlySalesAmount);
+				$('#dailySalesCount').text(createCommaFormat(data.salesInfo.dailySalesCount));
+				$('#dailySalesAmount').text(createCommaFormat(data.salesInfo.dailySalesAmount));
+				$('#monthlySalesCount').text(createCommaFormat(data.salesInfo.monthlySalesCount));
+				$('#monthlySalesAmount').text(createCommaFormat(data.salesInfo.monthlySalesAmount));
 			}
 			
 			if (data.monthlySales) {
@@ -37,14 +36,13 @@ function getSalesReport() {
 
 function createMenuPieChart(labels, values) {
 	let ctx = document.getElementById('menuPieChart').getContext('2d');
-
-	// 색상 배열 정의
+	
 	let colors = [
-		'rgba(78, 115, 223, 0.7)', // blue
-		'rgba(28, 200, 138, 0.7)', // green
-		'rgba(54, 185, 204, 0.7)', // teal
-		'rgba(238, 174, 202, 0.7)', // pink
-		'rgba(243, 156, 18, 0.7)'  // orange
+		'rgba(78, 115, 223, 0.7)',
+		'rgba(28, 200, 138, 0.7)',
+		'rgba(54, 185, 204, 0.7)',
+		'rgba(238, 174, 202, 0.7)',
+		'rgba(243, 156, 18, 0.7)'
 	];
 
 	let menuPieChart = new Chart(ctx, {
@@ -85,8 +83,7 @@ function createMenuPieChart(labels, values) {
 			}
 		}
 	});
-
-	// 동적으로 레전드 추가
+	
 	let legendHtml = '<div style="display: flex; flex-wrap: wrap; justify-content: flex-start;">';
 	labels.forEach(function(label, index) {
 		legendHtml += '<div style="display: flex; align-items: center; margin-left: 20px; width: 100%; box-sizing: border-box;">' +
@@ -150,7 +147,7 @@ function createMonthlySalesChart(labels, values) {
 						maxTicksLimit: 5,
 						padding: 10,
 						callback: function(value) {
-							return '$' + number_format(value);
+							return number_format(value);
 						}
 					}
 				}]
